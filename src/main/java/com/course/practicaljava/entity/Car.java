@@ -3,6 +3,12 @@ package com.course.practicaljava.entity;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -10,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+@Document(indexName = "practical-java")
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class Car {
 
@@ -25,17 +32,21 @@ public class Car {
 	@JsonUnwrapped
 	private Engine engine;
 
-	@JsonFormat(pattern = "dd-MMM-yyyy", timezone = "Europe/Bucharest")
+	@Field(type = FieldType.Date, format = DateFormat.date)
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Bucharest")
 	private LocalDate firstReleaseDate;
 
+	@Id
+	private String id;
+
 	private int price;
+
+	@JsonInclude(value = Include.NON_EMPTY)
+	private String secretFeature;
 
 	private List<Tire> tires;
 
 	private String type;
-
-	@JsonInclude(value = Include.NON_EMPTY)
-	private String secretFeature;
 
 	public Car() {
 
@@ -68,8 +79,16 @@ public class Car {
 		return firstReleaseDate;
 	}
 
+	public String getId() {
+		return id;
+	}
+
 	public int getPrice() {
 		return price;
+	}
+
+	public String getSecretFeature() {
+		return secretFeature;
 	}
 
 	public List<Tire> getTires() {
@@ -82,14 +101,6 @@ public class Car {
 
 	public boolean isAvailable() {
 		return available;
-	}
-
-	public String getSecretFeature() {
-		return secretFeature;
-	}
-
-	public void setSecretFeature(String secretFeature) {
-		this.secretFeature = secretFeature;
 	}
 
 	public void setAdditionalFeatures(List<String> additionalFeatures) {
@@ -116,8 +127,16 @@ public class Car {
 		this.firstReleaseDate = firstReleaseDate;
 	}
 
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public void setPrice(int price) {
 		this.price = price;
+	}
+
+	public void setSecretFeature(String secretFeature) {
+		this.secretFeature = secretFeature;
 	}
 
 	public void setTires(List<Tire> tires) {
